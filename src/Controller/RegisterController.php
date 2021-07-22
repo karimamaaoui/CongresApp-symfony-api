@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Entity\Users;
 use App\Repository\UserRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -49,4 +50,24 @@ class RegisterController extends AbstractController
            return $response;
 
     }
+
+    /**
+     * @Route ("/userData/{id}",name="user_show",methods="GET")
+     */
+
+    public function loadUserByEmail ($id):JsonResponse
+    {  
+        $user= $this->getDoctrine()
+                    ->getRepository(User::class)
+                    ->find($id);
+        if(!$user)
+        {
+            throw $this->createNotFoundException('No user found for email ' .$id);
+        }            
+
+        $response = new JsonResponse('check out this user ' .$user->getFirstName().' ' .$user->getLastName().' ' .$user->getEmail().' '.$user->getId());
+        return $response;
+
+    }
 }
+
