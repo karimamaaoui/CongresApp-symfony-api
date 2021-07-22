@@ -12,7 +12,8 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\HttpFoundation\Response;
 
 class RegisterController extends AbstractController
-{
+{   
+    
 
     public function __construct(UserRepository $userRepository)
     {
@@ -25,7 +26,7 @@ class RegisterController extends AbstractController
      */
     public function add(Request $request,UserPasswordEncoderInterface $passwordEncoder): JsonResponse
     {   
-         
+          
            $user= new User();
            $data=json_decode($request->getContent(),true);
 
@@ -38,7 +39,7 @@ class RegisterController extends AbstractController
            $user->setFirstName($data['firstName']);
            $user->setLastName($data['lastName']);
            $user->setEmail($data['email']);
-
+        
            $entityManager =$this->getDoctrine()->getManager();
            $entityManager->persist($user);
            $entityManager->flush();

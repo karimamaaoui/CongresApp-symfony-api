@@ -58,6 +58,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * )
      */
     private $password;
+    private $confirmationToken;
 
     /**     
      * @var string The Hashed password
@@ -208,6 +209,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+
+    public function getConfirmationToken()
+    {
+        return $this->confirmationToken;
+    }
+
+    public function setConfirmationToken($confirmationToken): void
+    {
+        $this->confirmationToken = $confirmationToken;
+    }
+
 
      public function __serialize(): array
     {

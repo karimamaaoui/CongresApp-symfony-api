@@ -44,7 +44,8 @@ security:
             methods: [POST]
             security: false 
             stateless: true
-                    
+            anonymous: true            
+
         api:
             pattern: ^/api
             stateless: true
@@ -70,6 +71,5 @@ security:
          - { path: ^/api/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
          - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
          - { path: ^/api/register, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-         - { path: ^/api/users?email=contact@mail.com, roles: IS_AUTHENTICATED_ANONYMOUSLY, methods: [GET] }
 
         # - { path: ^/admin, roles: ROLE_ADMIN }
