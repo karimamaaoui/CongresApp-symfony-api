@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Entity\Users;
 use App\Repository\UserRepository;
+use Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -44,7 +45,7 @@ class RegisterController extends AbstractController
            $entityManager =$this->getDoctrine()->getManager();
            $entityManager->persist($user);
            $entityManager->flush();
-           $response = new JsonResponse(['status' => $user], 201);
+           $response = new JsonResponse(['status' => $user->getFirstName().' ' .$user->getLastName().' ' .$user->getEmail(). ' '. $user->getId()], 201);
            $response->headers->set('Content-Type', 'application/json');
            $response->headers->set('Access-Control-Allow-Origin', '*');
            return $response;
@@ -69,5 +70,50 @@ class RegisterController extends AbstractController
         return $response;
 
     }
+    
+
+    
+    /**
+     * @Route ("/user/edit/{id}",name="user_edit",methods={"GET", "POST","PUT"})
+     */
+
+
+    public function editUser ($id,Request $request,UserPasswordEncoderInterface $passwordEncoder):JsonResponse
+    {
+
+        $entityManager = $this->getDoctrine()
+                                ->getManager();
+        $user = $entityManager->getRepository(User::class)
+                                ->find($id);
+        $data=json_decode($request->getContent(),true);
+
+                        
+        if(!$user)
+        {
+            throw $this->createNotFoundException('No user found for id ' .$id);
+        }            
+        empty($data['password'])?true:$user->setPassword($passwordEncoder->encodePassword($user,$data["password"]));
+       
+        empty($data['firstName'])?true: $user->setFirstName($data['firstName']);
+        empty($data['lastName'])?true: $user->setLastName($data['lastName']);
+        
+        $entityManager->persist($user);
+        $entityManager->flush();
+        $response = new JsonResponse(['status' => $user->getFirstName().' ' .$user->getLastName().' ' .$user->getEmail(). ' '. $user->getPassword()], 201 );
+        return $response;
+
+
+    }
+
+    
+     /**
+      * @Route("/logout", name="app_logout",methods= "GET")
+     */
+       
+     public function logout ()
+     {
+         throw new Exception('should not be reached');
+     }
+
 }
 

@@ -31,14 +31,12 @@ security:
                 password_path: password
                 success_handler: lexik_jwt_authentication.handler.authentication_success
                 failure_handler: lexik_jwt_authentication.handler.authentication_failure
-        #logout:
-         #   path: app_logout
-          #  target: app_login
-            
-       # remember_me:
-        #    secret: '%kernel.secret%'
-         #   lifetime: 604800    
-          #  path: /
+            logout:
+                path: app_logout
+            remember_me:
+                secret: '%kernel.secret%'
+                lifetime: 604800    
+                path: /
         register:
             pattern: ^/api/register
             methods: [POST]
