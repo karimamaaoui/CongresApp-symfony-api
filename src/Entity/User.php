@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -11,13 +13,20 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use App\DataPersister\UserDataPersister;
 
+
+//use App\Controller\ResetPasswordController;
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
  * 
  * @ApiResource(
  *     normalizationContext={"groups"={"user:read"}},
  *     denormalizationContext={"groups"={"user:write"}},
- *     itemOperations={"get"},
+ *     itemOperations={
+ *          "get",
+ *          "put",
+ *          "delete"  ,
+ *          
+ * },
  *     collectionOperations={"get"},
  *         
  * ),
@@ -58,6 +67,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * )
      */
     private $password;
+    
     private $confirmationToken;
 
     /**     
@@ -81,6 +91,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private $lastName;
      
+    private $newPassword;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Congresses::class, mappedBy="userId")
+     */
+    private $congress;
+
+    public function __construct()
+    {
+        $this->congress = new ArrayCollection();
+    }
+
+   
+    public function getNewPassword(): ?string
+    {
+        return $this->newPassword;
+    }
+
+    public function setNewPassword($newPassword): void
+    {
+        $this->newPassword = $newPassword;
+    }
+
+
     /**
      * @return mixed
      */
@@ -230,4 +264,38 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         [$this->id, $this->username,$this->firstName,$this->lastName ,$this->password] = $data;
     }
+
+    /**
+     * @return Collection|Congresses[]
+     */
+    public function getCongress(): Collection
+    {
+        return $this->congress;
+    }
+
+    public function addCongress(Congresses $congress): self
+    {
+        if (!$this->congress->contains($congress)) {
+            $this->congress[] = $congress;
+            $congress->setUserId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCongress(Congresses $congress): self
+    {
+        if ($this->congress->removeElement($congress)) {
+            // set the owning side to null (unless already changed)
+            if ($congress->getUserId() === $this) {
+                $congress->setUserId(null);
+            }
+        }
+
+        return $this;
+    }
+
+    
+
+
 }
