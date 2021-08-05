@@ -6,12 +6,15 @@ use App\Entity\User;
 use App\Entity\Users;
 use App\Repository\UserRepository;
 use Exception;
+use Swift_Message;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
 
 class RegisterController extends AbstractController
 {   
@@ -26,7 +29,7 @@ class RegisterController extends AbstractController
      * @Route("/api/register", name="app_register",methods={"GET", "POST"})
      * 
      */
-    public function add(Request $request,UserPasswordEncoderInterface $passwordEncoder): JsonResponse
+    public function add(\Swift_Mailer $mailer, Request $request,UserPasswordEncoderInterface $passwordEncoder): JsonResponse
     {   
           
            $user= new User();
@@ -41,13 +44,28 @@ class RegisterController extends AbstractController
            $user->setFirstName($data['firstName']);
            $user->setLastName($data['lastName']);
            $user->setEmail($data['email']);
-        
            $entityManager =$this->getDoctrine()->getManager();
            $entityManager->persist($user);
            $entityManager->flush();
+           
+           $email = (new Swift_Message("HELLO FROM CONGRESSES APPLICATION"))
+
+           ->setFrom ("securesally@gmail.com")
+                ->setTo($user->getEmail())
+                //->subject ("Please confirm your email")
+                //->text("welcome") 
+                //->html('<p>My HTML content</p>');
+                ->setSubject("Please confirm your email")
+               // ->setBody("click here");
+               ->setBody($this->renderView('confirm.html.twig',
+                    ['name'=>$user->getFirstName()]));
+
+                $mailer->send($email);
+
            $response = new JsonResponse(['status' => $user->getFirstName().' ' .$user->getLastName().' ' .$user->getEmail(). ' '. $user->getId()], 201);
            $response->headers->set('Content-Type', 'application/json');
            $response->headers->set('Access-Control-Allow-Origin', '*');
+         //  $this->redirectToRoute('api_login_check');
            return $response;
 
     }
@@ -56,7 +74,7 @@ class RegisterController extends AbstractController
      * @Route ("/userData/{id}",name="user_show",methods="GET")
      */
 
-    public function loadUserByEmail ($id):JsonResponse
+  /*  public function loadUserByEmail ($id):JsonResponse
     {  
         $user= $this->getDoctrine()
                     ->getRepository(User::class)
@@ -70,7 +88,7 @@ class RegisterController extends AbstractController
         return $response;
 
     }
-    
+    */
 
     
     /**
@@ -78,7 +96,7 @@ class RegisterController extends AbstractController
      */
 
 
-    public function editUser ($id,Request $request,UserPasswordEncoderInterface $passwordEncoder):JsonResponse
+   /* public function editUser ($id,Request $request,UserPasswordEncoderInterface $passwordEncoder):JsonResponse
     {
 
         $entityManager = $this->getDoctrine()
@@ -103,7 +121,7 @@ class RegisterController extends AbstractController
         return $response;
 
 
-    }
+    }*/
 
     
      /**

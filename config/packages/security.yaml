@@ -26,10 +26,13 @@ security:
             pattern: ^/api/login
             stateless: true
             json_login:
+                # lehna authentication will happen (token)
                 check_path: /api/login
                 username_path: email
                 password_path: password
+                # lehna handle successful authentication
                 success_handler: lexik_jwt_authentication.handler.authentication_success
+                #lehna  handle authentication failure (invalid credentials)
                 failure_handler: lexik_jwt_authentication.handler.authentication_failure
             logout:
                 path: app_logout
@@ -69,5 +72,6 @@ security:
          - { path: ^/api/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
          - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
          - { path: ^/api/register, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+         - { path: ^/api/congres, roles: IS_AUTHENTICATED_FULLY , methods :[POST,PUT, DELETE, PATCH]}
 
         # - { path: ^/admin, roles: ROLE_ADMIN }

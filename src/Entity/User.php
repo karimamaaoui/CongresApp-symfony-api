@@ -6,6 +6,7 @@ use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use ApiPlatform\Core\Annotation\ApiResource;
@@ -30,7 +31,7 @@ use App\DataPersister\UserDataPersister;
  *     collectionOperations={"get"},
  *         
  * ),
-
+ * @UniqueEntity(fields={"email"}, message="There is already an account with this email")
  */
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
@@ -93,16 +94,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      
     private $newPassword;
 
-    /**
-     * @ORM\OneToMany(targetEntity=Congresses::class, mappedBy="userId")
-     */
-    private $congress;
-
-    public function __construct()
-    {
-        $this->congress = new ArrayCollection();
-    }
-
+    
    
     public function getNewPassword(): ?string
     {
@@ -154,7 +146,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      *
      * @see UserInterface
      */
-    public function getUserIdentifier(): string
+ 
+     public function getUserIdentifier(): string
     {
         return (string) $this->email;
     }
@@ -263,36 +256,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function __unserialize(array $data): void
     {
         [$this->id, $this->username,$this->firstName,$this->lastName ,$this->password] = $data;
-    }
-
-    /**
-     * @return Collection|Congresses[]
-     */
-    public function getCongress(): Collection
-    {
-        return $this->congress;
-    }
-
-    public function addCongress(Congresses $congress): self
-    {
-        if (!$this->congress->contains($congress)) {
-            $this->congress[] = $congress;
-            $congress->setUserId($this);
-        }
-
-        return $this;
-    }
-
-    public function removeCongress(Congresses $congress): self
-    {
-        if ($this->congress->removeElement($congress)) {
-            // set the owning side to null (unless already changed)
-            if ($congress->getUserId() === $this) {
-                $congress->setUserId(null);
-            }
-        }
-
-        return $this;
     }
 
     

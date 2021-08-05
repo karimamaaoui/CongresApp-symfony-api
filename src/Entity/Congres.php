@@ -3,66 +3,56 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
-use App\Repository\CongressesRepository;
+use App\Repository\CongresRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
+
 
 /**
+
  * @ApiResource(
- *     normalizationContext={"groups"={"congresses:read"}},
- *     denormalizationContext={"groups"={"congresses:write"},
- * },
- * 
- * itemOperations={
+ *     normalizationContext={"groups"={"congres:read"}},
+ *     denormalizationContext={"groups"={"congres:write"}},
+ *     itemOperations={
  *          "get",
  *          "put",
  *          "delete"  ,
  *          
  * },
  *     collectionOperations={"get","post"},
- *     
- * )
- * @ORM\Entity(repositoryClass=CongressesRepository::class)
+ *         
+ * ),
+ * @ORM\Entity(repositoryClass=CongresRepository::class)
  */
-class Congresses
+class Congres
 {
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups("congresses:read")
-     * 
+     * @Groups("congres:read")
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * 
-     * @Groups({"congresses:read", "congresses:write"})
+     * @Groups({"congres:read", "congres:write"})
+     * @Assert\Length(min=3, max=50) 
      */
     private $title;
 
     /**
      * @ORM\Column(type="text")
-     * 
-     * @Groups({"congresses:read", "congresses:write"})
+     * @Groups({"congres:read", "congres:write"})
      */
     private $description;
 
     /**
      * @ORM\Column(type="datetime")
-     * 
-     * @Groups({"congresses:read", "congresses:write"})
+     * @Groups({"congres:read", "congres:write"})
      */
     private $createdAt;
-
-    /**
-     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="congress")
-     * @ORM\JoinColumn(nullable=false)
-     * 
-     * @Groups({"congresses:read", "congresses:write"})
-     */
-    private $userId;
 
     public function getId(): ?int
     {
@@ -101,18 +91,6 @@ class Congresses
     public function setCreatedAt(\DateTimeInterface $createdAt): self
     {
         $this->createdAt = $createdAt;
-
-        return $this;
-    }
-
-    public function getUserId(): ?User
-    {
-        return $this->userId;
-    }
-
-    public function setUserId(?User $userId): self
-    {
-        $this->userId = $userId;
 
         return $this;
     }
