@@ -44,6 +44,8 @@ class RegisterController extends AbstractController
            $user->setFirstName($data['firstName']);
            $user->setLastName($data['lastName']);
            $user->setEmail($data['email']);
+           $user->setCreatedAt(new \DateTime());
+           $user->setUpdatedAt(new \DateTime());
            $entityManager =$this->getDoctrine()->getManager();
            $entityManager->persist($user);
            $entityManager->flush();
@@ -57,10 +59,21 @@ class RegisterController extends AbstractController
                 //->html('<p>My HTML content</p>');
                 ->setSubject("Please confirm your email")
                // ->setBody("click here");
-               ->setBody($this->renderView('confirm.html.twig',
-                    ['name'=>$user->getFirstName()]));
+               ->setBody(
+                   $this->renderView('confirm.html.twig',
+                    ['name'=>$user->getFirstName(),
+                    'link'=>"http://localhost:3000/login"
+                    ]));
 
                 $mailer->send($email);
+                if (!$mailer)
+                {
+                    $user->setIsVerified=0;
+                }
+                else {
+                    $user->setIsVerified=1;
+
+                }
 
            $response = new JsonResponse(['status' => $user->getFirstName().' ' .$user->getLastName().' ' .$user->getEmail(). ' '. $user->getId()], 201);
            $response->headers->set('Content-Type', 'application/json');
@@ -69,6 +82,66 @@ class RegisterController extends AbstractController
            return $response;
 
     }
+
+    /**
+     * @Route("/api/admin/register", name="app_register_admin",methods={"GET", "POST"})
+     * 
+     */
+    public function addAdmin(\Swift_Mailer $mailer, Request $request,UserPasswordEncoderInterface $passwordEncoder): JsonResponse
+    {   
+          
+           $user= new User();
+           $data=json_decode($request->getContent(),true);
+
+           $user->setPassword(
+               $passwordEncoder->encodePassword(
+                   $user,
+                   $data["password"]
+               )
+           );
+           $user->setFirstName($data['firstName']);
+           $user->setLastName($data['lastName']);
+           $user->setEmail($data['email']);
+           $user->setCreatedAt(new \DateTime());
+           $user->setUpdatedAt(new \DateTime());
+           $user->setRoles(['ROLE_ADMIN']);
+           $entityManager =$this->getDoctrine()->getManager();
+           $entityManager->persist($user);
+           $entityManager->flush();
+           
+        /*   $email = (new Swift_Message("HELLO FROM CONGRESSES APPLICATION"))
+
+           ->setFrom ("securesally@gmail.com")
+                ->setTo($user->getEmail())
+                //->subject ("Please confirm your email")
+                //->text("welcome") 
+                //->html('<p>My HTML content</p>');
+                ->setSubject("Please confirm your email")
+               // ->setBody("click here");
+               ->setBody(
+                   $this->renderView('confirm.html.twig',
+                    ['name'=>$user->getFirstName(),
+                    'link'=>"http://localhost:3000/login"
+                    ]));*/
+
+           //     $mailer->send($email);
+           /*     if (!$mailer)
+                {
+                    $user->setIsVerified=0;
+                }
+                else {
+                    $user->setIsVerified=1;
+
+                }
+*/
+           $response = new JsonResponse(['status' => $user->getFirstName().' ' .$user->getLastName().' ' .$user->getEmail(). ' '. $user->getId()], 201);
+           $response->headers->set('Content-Type', 'application/json');
+           $response->headers->set('Access-Control-Allow-Origin', '*');
+         //  $this->redirectToRoute('api_login_check');
+           return $response;
+
+    }
+
 
     /**
      * @Route ("/userData/{id}",name="user_show",methods="GET")

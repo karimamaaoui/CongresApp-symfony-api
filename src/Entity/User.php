@@ -13,9 +13,8 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use App\DataPersister\UserDataPersister;
+use App\Controller\ResetPasswordController;
 
-
-//use App\Controller\ResetPasswordController;
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
  * 
@@ -26,6 +25,17 @@ use App\DataPersister\UserDataPersister;
  *          "get",
  *          "put",
  *          "delete"  ,
+ * 
+ *          "put-reset-password"={
+ *             "access_control"="is_granted('IS_AUTHENTICATED_FULLY') and object == user",
+ *             "method"="PUT",
+ *             "path"="/api/users/{id}/reset-password",
+ *             "controller"=ResetPasswordController::class,
+ *             "denormalization_context"={
+ *                 "groups"={"put-reset-password"}
+ *             },
+ *             "validation_groups"={"put-reset-password"}
+ *         }
  *          
  * },
  *     collectionOperations={"get"},
@@ -35,6 +45,10 @@ use App\DataPersister\UserDataPersister;
  */
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
+    const ROLE_USER ="ROLE_USER";
+    const ROLE_ADMIN="ROLE_ADMIN";
+    const DEFAULT_ROLES = [self::ROLE_USER];
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -54,7 +68,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $email;
 
     /**
-     * @ORM\Column(type="json")
+     * @ORM\Column(type="json",name="role")
      */
     private $roles = [];
 
@@ -91,10 +105,51 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @Assert\Length(min=3, max=50) 
      */
     private $lastName;
-     
+    
+
+    /**
+     * @Groups({"put-reset-password"})
+     * @Assert\NotBlank(groups={"put-reset-password"})
+     * @Assert\Regex(
+     *     pattern="/(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9]).{7,}/",
+     *     message="Password must be seven characters long and contain at least one digit, one upper case letter and one lower case letter",
+     *     groups={"put-reset-password"}
+     * )
+     */
     private $newPassword;
 
+    /**
+     * @var \DateTime
+     * @ORM\Column(type="datetime",name="created",nullable=true)
+     * @Groups({"user:read", "user:write"})
+     */
+    private $createdAt;
+
+
+
+    /**
+     * @ORM\Column(type="boolean")
+     * @Groups({"user:read", "user:write"})
+
+     */
+    protected $isVerified=false;
+
+    /**
+     * @var \DateTime
+     * @ORM\Column(type="datetime",name="updated",nullable=true)
+     * @Groups({"user:read", "user:write"})
+     */
+
+    private $updatedAt;
+
+
+    public function __construct()
+    {
+        $this->roles = self::DEFAULT_ROLES;
+        $this->confirmationToken = null;
+    }
     
+
    
     public function getNewPassword(): ?string
     {
@@ -256,6 +311,45 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function __unserialize(array $data): void
     {
         [$this->id, $this->username,$this->firstName,$this->lastName ,$this->password] = $data;
+    }
+
+    public function getCreatedAt(): ?\DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeInterface $createdAt): self
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+
+
+
+    public function getIsVerified(): ?bool
+    {
+        return $this->isVerified;
+    }
+
+    public function setIsVerified(bool $isVerified): self
+    {
+        $this->isVerified = $isVerified;
+
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeInterface
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(?\DateTimeInterface $updatedAt): self
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
     }
 
     

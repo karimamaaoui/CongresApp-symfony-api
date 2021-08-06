@@ -4,3 +4,7 @@
 
 api_login_check:
     path: /api/login
+
+api_admin_login_check:
+    path: /api/admin/login
+

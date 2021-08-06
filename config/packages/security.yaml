@@ -45,8 +45,23 @@ security:
             methods: [POST]
             security: false 
             stateless: true
-            anonymous: true            
-
+            anonymous: true   
+        admin:
+            pattern: ^/api/admin/login
+            stateless: true
+            json_login:
+                username_path: email
+                password_path: password
+                check_path: /api/admin/login
+                success_handler: lexik_jwt_authentication.handler.authentication_success
+                failure_handler: lexik_jwt_authentication.handler.authentication_failure    
+        register_admin:
+            pattern: ^/api/admin/register
+            methods: [POST]
+            security: false             
+            anonymous: true
+            stateless: true    
+         
         api:
             pattern: ^/api
             stateless: true
@@ -73,5 +88,5 @@ security:
          - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
          - { path: ^/api/register, roles: IS_AUTHENTICATED_ANONYMOUSLY }
          - { path: ^/api/congres, roles: IS_AUTHENTICATED_FULLY , methods :[POST,PUT, DELETE, PATCH]}
-
-        # - { path: ^/admin, roles: ROLE_ADMIN }
+         - { path: ^/api/admin/login, roles: ROLE_ADMIN }
+         - { path: ^/api/admin/register, roles: ROLE_ADMIN }
