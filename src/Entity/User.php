@@ -24,7 +24,9 @@ use App\Controller\ResetPasswordController;
  *     itemOperations={
  *          "get",
  *          "put",
- *          "delete"  ,
+ *          "delete" ={
+ *                 "access_control"="is_granted('ROLE_ADMIN')"
+ *              } ,
  * 
  *          "put-reset-password"={
  *             "access_control"="is_granted('IS_AUTHENTICATED_FULLY') and object == user",
@@ -35,8 +37,8 @@ use App\Controller\ResetPasswordController;
  *                 "groups"={"put-reset-password"}
  *             },
  *             "validation_groups"={"put-reset-password"}
- *         }
- *          
+ *         },
+ *         
  * },
  *     collectionOperations={"get"},
  *         
@@ -69,6 +71,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * @ORM\Column(type="json",name="role")
+     * @Groups({"user:read"})
      */
     private $roles = [];
 
