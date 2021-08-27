@@ -78,7 +78,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var string The hashed password
      * @ORM\Column(type="string")
-     * @Groups("user:write")
+     * @Groups({"user:read", "user:write"})
      * @Assert\Regex(
      *     pattern="/(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9]).{7,}/",
      *     message="Password must be seven characters  and contain at least one digit, one upper case letter and one lower case letter"
@@ -90,7 +90,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**     
      * @var string The Hashed password
-     * @Groups("user:write")
+     * @Groups({"user:read", "user:write"})
      */
 
     private $plainPassword;

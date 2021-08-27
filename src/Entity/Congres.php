@@ -20,7 +20,10 @@ use Symfony\Component\Validator\Constraints as Assert;
  *          "delete"  ,
  *          
  * },
- *     collectionOperations={"get","post"},
+ * 
+ *     collectionOperations={"get",
+ *              "post"
+ * },
  *         
  * ),
  * @ORM\Entity(repositoryClass=CongresRepository::class)
@@ -53,6 +56,14 @@ class Congres
      * @Groups({"congres:read", "congres:write"})
      */
     private $createdAt;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Salle::class, inversedBy="congres")
+     * @ORM\JoinColumn(nullable=false)
+     * @Groups({"congres:read", "congres:write"})
+     */
+    private $salle;
+
 
     public function getId(): ?int
     {
@@ -94,4 +105,18 @@ class Congres
 
         return $this;
     }
+
+    public function getSalle(): ?salle
+    {
+        return $this->salle;
+    }
+
+    public function setSalle(?salle $salle): self
+    {
+        $this->salle = $salle;
+
+        return $this;
+    }
+
+
 }

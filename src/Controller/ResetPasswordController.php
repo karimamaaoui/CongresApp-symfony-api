@@ -51,7 +51,7 @@ class ResetPasswordController extends AbstractController
     public function __invoke(User $data)
     {
         $this->validator->validate($data);
-
+        
         $data->setPassword(
             $this->userPasswordEncoder->encodePassword(
                 $data, $data->getNewPassword()

@@ -46,6 +46,7 @@ class RegisterController extends AbstractController
            $user->setEmail($data['email']);
            $user->setCreatedAt(new \DateTime());
            $user->setUpdatedAt(new \DateTime());
+           $user->setIsVerified(true);
            $entityManager =$this->getDoctrine()->getManager();
            $entityManager->persist($user);
            $entityManager->flush();
@@ -66,23 +67,15 @@ class RegisterController extends AbstractController
                     ]));
 
                 $mailer->send($email);
-                if (!$mailer)
-                {
-                    $user->setIsVerified=0;
-                }
-                else {
-                    $user->setIsVerified=1;
+                
 
-                }
-
-           $response = new JsonResponse(['status' => $user->getFirstName().' ' .$user->getLastName().' ' .$user->getEmail(). ' '. $user->getId()], 201);
+           $response = new JsonResponse(['status' => $user->getFirstName().' ' .$user->getLastName().' ' .$user->getEmail(). ' '. $user->getId().' '. $user->getPassword()], 201);
            $response->headers->set('Content-Type', 'application/json');
            $response->headers->set('Access-Control-Allow-Origin', '*');
          //  $this->redirectToRoute('api_login_check');
            return $response;
 
     }
-
     /**
      * @Route("/api/admin/register", name="app_register_admin",methods={"GET", "POST"})
      * 
@@ -133,8 +126,8 @@ class RegisterController extends AbstractController
                     $user->setIsVerified=1;
 
                 }
-*/
-           $response = new JsonResponse(['status' => $user->getFirstName().' ' .$user->getLastName().' ' .$user->getEmail(). ' '. $user->getId()], 201);
+        */
+           $response = new JsonResponse(['status' => $user->getFirstName().' ' .$user->getLastName().' ' .$user->getEmail(). ' '. $user->getId(). ' '.$user->getPassword()], 201);
            $response->headers->set('Content-Type', 'application/json');
            $response->headers->set('Access-Control-Allow-Origin', '*');
          //  $this->redirectToRoute('api_login_check');

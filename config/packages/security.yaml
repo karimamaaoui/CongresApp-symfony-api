@@ -55,12 +55,14 @@ security:
                 check_path: /api/admin/login
                 success_handler: lexik_jwt_authentication.handler.authentication_success
                 failure_handler: lexik_jwt_authentication.handler.authentication_failure    
+        
         register_admin:
             pattern: ^/api/admin/register
             methods: [POST]
             security: false             
             anonymous: true
-            stateless: true    
+            stateless: true
+    
          
         api:
             pattern: ^/api
@@ -88,5 +90,5 @@ security:
          - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
          - { path: ^/api/register, roles: IS_AUTHENTICATED_ANONYMOUSLY }
          - { path: ^/api/congres, roles: IS_AUTHENTICATED_FULLY , methods :[POST,PUT, DELETE, PATCH]}
-         - { path: ^/api/admin/login, roles: ROLE_ADMIN }
-         - { path: ^/api/admin/register, roles: ROLE_ADMIN }
+         - { path: ^/api/admin/login, roles: ROLE_ADMIN ,methods :[POST,PUT, DELETE, PATCH]}
+         - { path: ^/api/admin/register, roles: ROLE_ADMIN ,methods :[POST,PUT, DELETE, PATCH]}
