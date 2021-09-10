@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\CongresRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -64,6 +66,16 @@ class Congres
      */
     private $salle;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Booking::class, mappedBy="congres")
+     */
+    private $bookings;
+
+    public function __construct()
+    {
+        $this->bookings = new ArrayCollection();
+    }
+
 
     public function getId(): ?int
     {
@@ -114,6 +126,36 @@ class Congres
     public function setSalle(?salle $salle): self
     {
         $this->salle = $salle;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Booking[]
+     */
+    public function getBookings(): Collection
+    {
+        return $this->bookings;
+    }
+
+    public function addBooking(Booking $booking): self
+    {
+        if (!$this->bookings->contains($booking)) {
+            $this->bookings[] = $booking;
+            $booking->setCongres($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBooking(Booking $booking): self
+    {
+        if ($this->bookings->removeElement($booking)) {
+            // set the owning side to null (unless already changed)
+            if ($booking->getCongres() === $this) {
+                $booking->setCongres(null);
+            }
+        }
 
         return $this;
     }

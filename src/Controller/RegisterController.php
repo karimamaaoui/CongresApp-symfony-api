@@ -53,13 +53,9 @@ class RegisterController extends AbstractController
            
            $email = (new Swift_Message("HELLO FROM CONGRESSES APPLICATION"))
 
-           ->setFrom ("securesally@gmail.com")
+                ->setFrom ("securesally@gmail.com")
                 ->setTo($user->getEmail())
-                //->subject ("Please confirm your email")
-                //->text("welcome") 
-                //->html('<p>My HTML content</p>');
                 ->setSubject("Please confirm your email")
-               // ->setBody("click here");
                ->setBody(
                    $this->renderView('confirm.html.twig',
                     ['name'=>$user->getFirstName(),

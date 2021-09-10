@@ -145,11 +145,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     private $updatedAt;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Booking::class, mappedBy="user")
+     */
+    private $bookings;
+
 
     public function __construct()
     {
         $this->roles = self::DEFAULT_ROLES;
         $this->confirmationToken = null;
+        $this->bookings = new ArrayCollection();
     }
     
 
@@ -351,6 +357,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setUpdatedAt(?\DateTimeInterface $updatedAt): self
     {
         $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Booking[]
+     */
+    public function getBookings(): Collection
+    {
+        return $this->bookings;
+    }
+
+    public function addBooking(Booking $booking): self
+    {
+        if (!$this->bookings->contains($booking)) {
+            $this->bookings[] = $booking;
+            $booking->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBooking(Booking $booking): self
+    {
+        if ($this->bookings->removeElement($booking)) {
+            // set the owning side to null (unless already changed)
+            if ($booking->getUser() === $this) {
+                $booking->setUser(null);
+            }
+        }
 
         return $this;
     }
