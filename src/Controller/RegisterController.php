@@ -6,6 +6,7 @@ use App\Entity\User;
 use App\Entity\Users;
 use App\Repository\UserRepository;
 use Exception;
+use phpDocumentor\Reflection\Types\Boolean;
 use Swift_Message;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -46,23 +47,31 @@ class RegisterController extends AbstractController
            $user->setEmail($data['email']);
            $user->setCreatedAt(new \DateTime());
            $user->setUpdatedAt(new \DateTime());
-           $user->setIsVerified(true);
+          // $user->setIsVerified(true);
            $entityManager =$this->getDoctrine()->getManager();
            $entityManager->persist($user);
            $entityManager->flush();
            
-           $email = (new Swift_Message("HELLO FROM CONGRESSES APPLICATION"))
 
+           $email = (new Swift_Message("HELLO FROM CONGRESSES APPLICATION"))
+               ->setContentType('text/html')
                 ->setFrom ("securesally@gmail.com")
                 ->setTo($user->getEmail())
-                ->setSubject("Please confirm your email")
-               ->setBody(
+                ->setSubject("HELLO FROM CONGRESSES APPLICATION");
+               $img = $email->embed(\Swift_Image::fromPath('images/banniere.png'));
+               $email->setBody(
+                
                    $this->renderView('confirm.html.twig',
                     ['name'=>$user->getFirstName(),
-                    'link'=>"http://localhost:3000/login"
-                    ]));
+                    'img'=>$img
+
+                    
+               ]));
+
+
 
                 $mailer->send($email);
+                
                 
 
            $response = new JsonResponse(['status' => $user->getFirstName().' ' .$user->getLastName().' ' .$user->getEmail(). ' '. $user->getId().' '. $user->getPassword()], 201);
@@ -70,8 +79,22 @@ class RegisterController extends AbstractController
            $response->headers->set('Access-Control-Allow-Origin', '*');
          //  $this->redirectToRoute('api_login_check');
            return $response;
+                }
 
-    }
+    /**
+    * @Route("confirm", name="confirm")
+    */
+    public function confirm( )
+    {
+        $user= new User();
+        $user->setIsVerified(1);
+        $entityManager =$this->getDoctrine()->getManager();
+        $entityManager->persist($user);
+        $entityManager->flush();
+        $this->redirectToRoute('api_login_check');
+     
+    }            
+
     /**
      * @Route("/api/admin/register", name="app_register_admin",methods={"GET", "POST"})
      * 
