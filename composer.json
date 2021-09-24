@@ -76,9 +76,7 @@
     },
     "autoload": {
         "psr-4": {
-            "App\\": "src/",
-            "Dunglas\\Heroku\\": "src/"
-
+            "App\\": "src/"
         }
     },
     "autoload-dev": {
