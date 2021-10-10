@@ -150,12 +150,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private $bookings;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Feedback::class, mappedBy="userId")
+     */
+    private $feedback;
+
 
     public function __construct()
     {
         $this->roles = self::DEFAULT_ROLES;
         $this->confirmationToken = null;
         $this->bookings = new ArrayCollection();
+        $this->feedback = new ArrayCollection();
     }
     
 
@@ -385,6 +391,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($booking->getUser() === $this) {
                 $booking->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Feedback[]
+     */
+    public function getFeedback(): Collection
+    {
+        return $this->feedback;
+    }
+
+    public function addFeedback(Feedback $feedback): self
+    {
+        if (!$this->feedback->contains($feedback)) {
+            $this->feedback[] = $feedback;
+            $feedback->setUserId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFeedback(Feedback $feedback): self
+    {
+        if ($this->feedback->removeElement($feedback)) {
+            // set the owning side to null (unless already changed)
+            if ($feedback->getUserId() === $this) {
+                $feedback->setUserId(null);
             }
         }
 

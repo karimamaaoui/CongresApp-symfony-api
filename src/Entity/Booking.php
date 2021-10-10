@@ -36,7 +36,6 @@ class Booking
      */
     private $createdAt;
 
-    
     public function getId(): ?int
     {
         return $this->id;
