@@ -40,6 +40,7 @@
         "symfony/property-access": "5.3.*",
         "symfony/property-info": "5.3.*",
         "symfony/proxy-manager-bridge": "5.3.*",
+        "symfony/requirements-checker": "^2.0",
         "symfony/runtime": "5.3.*",
         "symfony/security-bundle": "5.3.*",
         "symfony/security-core": "5.3.*",
@@ -101,7 +102,6 @@
             "php bin/console doctrine:fixtures:load --append"
         ],
         "post-update-cmd": [
-            "@auto-scripts"
         ]
     },
     "conflict": {
