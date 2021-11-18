@@ -98,6 +98,7 @@
             "@auto-scripts"
         ],
         "post-update-cmd": [
+            "@auto-scripts"
         ]
     },
     "conflict": {
