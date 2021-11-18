@@ -103,7 +103,6 @@
             "php bin/console doctrine:fixtures:load --append"
         ],
         "post-update-cmd": [
-            "@auto-scripts"
         ]
 
         
