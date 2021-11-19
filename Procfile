@@ -1,1 +1,1 @@
-web: heroku-php-apache2 public/api/greetings/
+'web: heroku-php-apache2 public/' 
