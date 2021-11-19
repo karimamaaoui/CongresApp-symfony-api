@@ -78,7 +78,9 @@
     },
     "autoload": {
         "psr-4": {
-            "App\\": "src/"
+            "App\\": "src/",
+            "DataPersister\\": "src/DataPersister/UserDataPersister"
+
         }
     },
     "autoload-dev": {
