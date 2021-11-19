@@ -78,7 +78,8 @@
     },
     "autoload": {
         "psr-4": {
-            "App\\": "src/"
+            "App\\": "src/",
+            "DataPersisiter\\" :"src/DataPersister"
         }
     },
     "autoload-dev": {
@@ -99,9 +100,7 @@
             
         },
         "post-install-cmd": [
-            "@auto-scripts",
-            "php bin/console doctrine:schema:update --force",
-            "php bin/console doctrine:fixtures:load --append"
+            "@auto-scripts"
         ],
         "post-update-cmd": [
             "@auto-scripts"
