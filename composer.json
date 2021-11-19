@@ -79,7 +79,7 @@
     "autoload": {
         "psr-4": {
             "App\\": "src/",
-            "DataPersister" :"src/DataPersister"
+            "DataPersister\\" :"src/DataPersister"
         }
     },
     "autoload-dev": {
