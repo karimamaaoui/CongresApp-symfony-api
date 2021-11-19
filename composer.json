@@ -96,7 +96,9 @@
        
         "auto-scripts": {
             "cache:clear": "symfony-cmd",
-            "assets:install %PUBLIC_DIR%": "symfony-cmd"     
+            "assets:install %PUBLIC_DIR%": "symfony-cmd",
+            "symfony check:security": "script"
+ 
         },
         "post-install-cmd": [
             "@auto-scripts"
