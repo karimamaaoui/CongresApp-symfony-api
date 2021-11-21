@@ -131,21 +131,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
 
     /**
-     * @ORM\Column(type="boolean")
-     * @Groups({"user:read", "user:write"})
-
-     */
-    protected $isVerified=false;
-
-    /**
-     * @var \DateTime
-     * @ORM\Column(type="datetime",name="updated",nullable=true)
-     * @Groups({"user:read", "user:write"})
-     */
-
-    private $updatedAt;
-
-    /**
      * @ORM\OneToMany(targetEntity=Booking::class, mappedBy="user")
      */
     private $bookings;
@@ -341,31 +326,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
 
-
-
-    public function getIsVerified(): ?bool
-    {
-        return $this->isVerified;
-    }
-
-    public function setIsVerified(bool $isVerified): self
-    {
-        $this->isVerified = $isVerified;
-
-        return $this;
-    }
-
-    public function getUpdatedAt(): ?\DateTimeInterface
-    {
-        return $this->updatedAt;
-    }
-
-    public function setUpdatedAt(?\DateTimeInterface $updatedAt): self
-    {
-        $this->updatedAt = $updatedAt;
-
-        return $this;
-    }
 
     /**
      * @return Collection|Booking[]

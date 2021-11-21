@@ -46,7 +46,6 @@ class RegisterController extends AbstractController
            $user->setLastName($data['lastName']);
            $user->setEmail($data['email']);
            $user->setCreatedAt(new \DateTime());
-           $user->setUpdatedAt(new \DateTime());
           // $user->setIsVerified(true);
            $entityManager =$this->getDoctrine()->getManager();
            $entityManager->persist($user);
@@ -87,7 +86,6 @@ class RegisterController extends AbstractController
     public function confirm( )
     {
         $user= new User();
-        $user->setIsVerified(1);
         $entityManager =$this->getDoctrine()->getManager();
         $entityManager->persist($user);
         $entityManager->flush();
@@ -115,7 +113,6 @@ class RegisterController extends AbstractController
            $user->setLastName($data['lastName']);
            $user->setEmail($data['email']);
            $user->setCreatedAt(new \DateTime());
-           $user->setUpdatedAt(new \DateTime());
            $user->setRoles(['ROLE_ADMIN']);
            $entityManager =$this->getDoctrine()->getManager();
            $entityManager->persist($user);
